@@ -17,7 +17,7 @@ impl <T> TomlCommentDefault for T where T : TomlComment + Default {
     }
 }
 
-impl<'a, T> TomlComment for &'a T 
+impl<T> TomlComment for &T 
 where 
     T: TomlComment + ?Sized 
 {
@@ -31,7 +31,7 @@ where
 
 }
 
-impl<'a, T> TomlComment for &'a mut T 
+impl<T> TomlComment for &mut T 
 where 
     T: TomlComment + ?Sized 
 {
