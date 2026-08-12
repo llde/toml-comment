@@ -1,6 +1,7 @@
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap};
 use toml_comment::TomlComment;
+use toml_comment::TomlCommentDefault;
 
 /// Application settings
 #[derive(Serialize, TomlComment)]
@@ -272,6 +273,23 @@ fn float_formatting() {
     let toml = Thresholds::default_toml();
     assert!(toml.contains("temperature = 1.0"));
     assert!(toml.contains("ratio = 0.75"));
+}
+
+
+
+#[derive(Serialize, TomlComment)]
+struct ThresholdsNoDefault {
+    /// Temperature threshold
+    temperature: f64,
+    /// Ratio value
+    ratio: f64,
+}
+
+#[test]
+fn float_formatting_nodefault() {
+    let toml = ThresholdsNoDefault {temperature : 0.0f64, ratio: 0.0f64}.to_commented_toml();
+    assert!(toml.contains("temperature = 0.0"));
+    assert!(toml.contains("ratio = 0.0"));
 }
 
 // --- Enum support ---

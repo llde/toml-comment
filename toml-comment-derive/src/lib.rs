@@ -104,10 +104,6 @@ pub fn derive_toml_comment(input: TokenStream) -> TokenStream {
 
     quote! {
         impl toml_comment::TomlComment for #name {
-            fn default_toml() -> String {
-                Self::default().to_commented_toml()
-            }
-
             fn to_commented_toml(&self) -> String {
                 let mut out = String::new();
                 self._render(&mut out, "");

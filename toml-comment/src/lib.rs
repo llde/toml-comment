@@ -1,11 +1,20 @@
 pub use toml_comment_derive::TomlComment;
 
-pub trait TomlComment: serde::Serialize + Default {
-    fn default_toml() -> String;
+pub trait TomlComment: serde::Serialize {
     fn to_commented_toml(&self) -> String;
 
     #[doc(hidden)]
     fn _render(&self, out: &mut String, prefix: &str);
+}
+
+pub trait TomlCommentDefault: TomlComment + Default{
+    fn default_toml() -> String;
+}
+
+impl <T> TomlCommentDefault for T where T : TomlComment + Default {
+    fn default_toml() -> String {
+        T::default().to_commented_toml()
+    }
 }
 
 pub fn fmt_value(val: &toml::Value) -> String {
