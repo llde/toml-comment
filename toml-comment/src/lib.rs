@@ -17,6 +17,33 @@ impl <T> TomlCommentDefault for T where T : TomlComment + Default {
     }
 }
 
+impl<'a, T> TomlComment for &'a T 
+where 
+    T: TomlComment + ?Sized 
+{
+    fn to_commented_toml(&self) -> String{
+        (*self).to_commented_toml()
+    }
+    #[doc(hidden)]
+    fn _render(&self, out: &mut String, prefix: &str){
+        (*self)._render(out,prefix)
+    }
+
+}
+
+impl<'a, T> TomlComment for &'a mut T 
+where 
+    T: TomlComment + ?Sized 
+{
+    fn to_commented_toml(&self) -> String{
+        (**self).to_commented_toml()
+    }
+    #[doc(hidden)]
+    fn _render(&self, out: &mut String, prefix: &str){
+        (**self)._render(out,prefix)
+    }
+}
+
 pub fn fmt_value(val: &toml::Value) -> String {
     match val {
         toml::Value::String(s) => format!("\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\"")),
