@@ -275,6 +275,14 @@ fn float_formatting() {
     assert!(toml.contains("ratio = 0.75"));
 }
 
+#[test]
+fn float_formatting_ref() {
+    let mut threshold = Thresholds::default();
+    let test_ref = &mut threshold;
+    let toml = test_ref.to_commented_toml();
+    assert!(toml.contains("temperature = 1.0"));
+    assert!(toml.contains("ratio = 0.75"));
+}
 
 
 #[derive(Serialize, TomlComment)]

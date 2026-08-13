@@ -63,7 +63,7 @@ pub fn derive_toml_comment(input: TokenStream) -> TokenStream {
             });
         } else if !force_inline && is_section_type(&field.ty) {
             let emit_blank = !first_section || !struct_docs.is_empty();
-            first_section = false;
+           first_section = false;
 
             render_body.push(quote! {
                 let section = if prefix.is_empty() {
@@ -79,11 +79,17 @@ pub fn derive_toml_comment(input: TokenStream) -> TokenStream {
 
             let doc_tokens = emit_docs(&field_docs);
             render_body.extend(doc_tokens);
-
-            render_body.push(quote! {
-                out.push_str(&format!("[{}]\n", section));
-                self.#field_name._render(out, &section);
-            });
+            let inner_only = has_toml_comment_attr(&field.attrs, "inner_only");
+            if inner_only {
+                render_body.push(quote! {
+                    self.#field_name._render(out, &section);
+                });
+            } else {
+                render_body.push(quote! {
+                    out.push_str(&format!("[{}]\n", section));
+                    self.#field_name._render(out, &section);
+                });
+            }
         } else if is_option_type(&field.ty) {
             let doc_tokens = emit_docs(&field_docs);
             render_body.push(quote! {
